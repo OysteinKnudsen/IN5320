@@ -1,67 +1,125 @@
 #portraitPicture{
     width: 150px;
-    height:150px;
-    max-width: 100%;
+    height: 150px;
+    margin: auto;
+    position: relative;
+    left: 30%;
+    top: 20%;
 }
 
 #socialLinks{
-    align-content: center;
-    border:none;
-    width: 280px;
-    padding-left: 5px;
-    padding-right: 5px;
+    width: 50%;
+    height: 20%;
     margin: auto;
     position: relative;
-    left: 50px;
-    bottom: 70px;
 }
-.section{
-    border: 1px solid black;
-    margin: auto;
-    width: 50%;
-    padding: 10px;
-    margin-bottom: 10px;
+
+#pageHeader{
+    height:100%;
+    width: 100%;
 }
 
 .sectionHeader{
     text-align: center;
 }
 
-.sectionGridTable{
-    border-spacing: 15px;
-    margin:auto;
+.section{
+    border: 1px solid black;
+    margin: auto;
+    position: relative;
     width: 80%;
+    padding: 2%;
+    margin-bottom: 2%;
+    height: 50%;
+    
 }
 
-.experienceCell{
-    height: 100px;
-    width: 200px;
+.gridRow{
+    position: relative;
+    margin: 5%;
+    left: 5%;
+}
+
+.gridCell{
+    display:inline-block;
+    height: 20%;
+    width: 25%;
     border: 1px solid black;
+    position: relative;
+    padding: 2%;
+}
+
+.sectionHeader {
+    text-align: center;
 }
 
 .experienceHeader{
-margin: 0;
+margin: 5px;
 padding: 0;
 text-align: center;
+font-size: 15px;
+word-wrap: break-word;
 }
 
 .experienceSubHeader{
-margin:0;
+margin:2px;
 padding:0;
 text-align: center;
+font-size: 13px;
 }
 
 .experienceDurationHeader{
-    margin:0;
+    margin:2px;
     padding:0;
     text-align: center;
+    font-size: 11px;
 }
 
 .experienceText{
     text-align: center;
+    font-size: 9px;
+    word-wrap: break-word;
 }
 
+html, body {
+    height: 100%;
+    width: 100%;
+}
 
+/*For IPAD-size+ screens*/
+@media screen and (min-width: 768px) {
+    #portraitPicture{
+        width:200px;
+        height: 200px;
+        margin: auto;
+        position: relative;
+        left: 0%;
+        top: 20%;
+    }
 
+    #pageHeader{
+        height:100%;
+        width: 100%;
+    }
 
+    #socialLinks{
+        width: 55%;
+        position: relative;
+        left: 10%;
+        bottom: 35%;
+    }
 
+    .experienceText{
+        font-size: 12px;
+    }
+
+    .experienceHeader{
+        font-size: 17px;
+    }
+
+    .experienceSubHeader{
+        font-size: 15px;
+    }
+}
+
+/* End for ipad screens section*/
