@@ -1,24 +1,30 @@
 <!DOCTYPE html>
 <html>
-    <head>
-            <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
 
-            <!-- Needed to provide responsive design, scale content to match the device -->
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Population lookup</title>
-            <link rel="population-lookup-style.css"
-            type="text/css"
-            href="style.css" />
-            <script type="text/javascript" src="population-lookup-scripts.js"></script>
-    </head>
+    <!-- Needed to provide responsive design, scale content to match the device -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Population lookup</title>
+    <link rel="population-lookup-style.css" type="text/css" href="style.css" />
+    <script type="text/javascript" src="population-lookup-scripts.js"></script>
+  </head>
 
   <body>
-      <div>
-            <input type="text" name="Country" value="Country" id="countryInputField">
-            <button onclick="appendToCountryList(document.getElementById('countryInputField').value);">Add</button>
+    <div>
+      <input
+        type="text"
+        name="Country"
+        value="Country"
+        id="countryInputField"
+      />
+      <button
+        onclick="appendToCountryList(document.getElementById('countryInputField').value);"
+      >
+        Add
+      </button>
 
-            <ul id="countryList">
-            </ul>
-      </div>
+      <ul id="countryList"></ul>
+    </div>
   </body>
 </html>
