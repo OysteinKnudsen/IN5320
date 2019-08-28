@@ -45,9 +45,11 @@ async function appendToCountryList(country, store) {
 function appendToLocalStorage(newCountry) {
   let existingCountries = localStorage.getItem("countries");
 
-  if (!existingCountries) existingCountries = [];
-
-  existingCountries = JSON.parse(existingCountries);
+  if (!existingCountries) {
+    existingCountries = [];
+  } else {
+    existingCountries = JSON.parse(existingCountries);
+  }
 
   existingCountries.push(newCountry);
   localStorage.setItem("countries", JSON.stringify(existingCountries));
