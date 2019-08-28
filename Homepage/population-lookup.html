@@ -20,18 +20,16 @@
       />
 
       <button
-        onclick="appendToCountryList(document.getElementById('countryInputField').value);"
+        onclick="appendToCountryList(document.getElementById('countryInputField').value, true);"
       >
         Add
       </button>
 
-      <button
-        onclick="clearCountryList()";
-      >
-        Clear
-      </button>
+      
 <br></br>
-      <input type="search" name="q" aria-label="Search.." id="searchBar" oninput="searchBarFunction()"/>
+      <input type="search"  value="Search" id="searchBar" oninput="searchBarFunction()"/>
+      <br></br>
+      </button>
       <ul id="countryList"></ul>
     </div>
   </body>
