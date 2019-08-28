@@ -1,14 +1,18 @@
-window.onload = populateCountryList;
-window.onload = setInterval(updatePopulationCount, 1000);
+window.onload = initWindow;
+
+var countries = [];
 
 /**
  * Appends a country to the list of countries
  * @param {*} country Country to be added.
  * @param {*} store Optional boolean to decide if the country should be stored in local memory
  */
+
 async function appendToCountryList(country, store) {
   var countryEntry = country;
   var countryPopulation;
+
+  addCountry(country);
 
   if (!endsWithNumbers(country)) {
     try {
@@ -201,4 +205,22 @@ async function updatePopulationCount() {
 
 function extractNumber(str) {
   return Number(str.replace(/[^0-9\.]+/g, ""));
+}
+
+function initWindow() {
+  populateCountryList();
+  setInterval(updatePopulationCount, 1000);
+}
+
+async function addCountry(nameOfCountry) {
+  let pop = await getPopulation(nameOfCountry);
+  let popGrowthRate = await calculatePopulationIncreaseRate(nameOfCountry);
+
+  let country = {
+    name: nameOfCountry,
+    population: pop,
+    populationGrowthRate: popGrowthRate
+  };
+
+  countries.push(country);
 }
