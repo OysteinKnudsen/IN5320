@@ -1,12 +1,17 @@
 window.onload = populateCountryList;
 
-function appendToCountryList(name) {
+async function appendToCountryList(name) {
+  let population = await getPopulation(name);
+
+  console.log("tråd fortsetter");
+
   // Create the list item
   let list = document.getElementById("countryList");
   var newListItem = document.createElement("li");
 
   // Add the country name and delete button
-  newListItem.appendChild(document.createTextNode(name));
+  let countryEntry = `${name} - ${population}`;
+  newListItem.appendChild(document.createTextNode(countryEntry));
 
   var delBtn = document.createElement("button");
   delBtn.innerHTML = "X";
@@ -15,7 +20,7 @@ function appendToCountryList(name) {
   newListItem.appendChild(delBtn);
   list.appendChild(newListItem);
 
-  appendToLocalStorage(name);
+  appendToLocalStorage(countryEntry);
 
   //Clear the input field and give focus
   var countryInputField = document.getElementById("countryInputField");
@@ -81,7 +86,6 @@ function startsWith(element, searchWord) {
   return element.startsWith(searchWord);
 }
 
-//TODO: MAKE SURE THIS IS NOT CASE-SENSITIVE
 function searchBarFunction() {
   let allCountries = JSON.parse(localStorage.getItem("countries"));
   let searchWord = document.getElementById("searchBar").value;
@@ -117,4 +121,14 @@ function createList(countries) {
   });
 
   document.getElementById("searchBar").focus();
+}
+
+async function getPopulation(country) {
+  let url = `http://54.72.28.201/1.0/population/${country}/2019-08-26`;
+  let response = await fetch(url);
+  console.log("henterdata");
+  let json = await response.json();
+
+  console.log("json", json.total_population.population);
+  return json.total_population.population;
 }

@@ -10,5 +10,8 @@
   "license": "ISC",
   "devDependencies": {
     "eslint": "^6.2.2"
+  },
+  "dependencies": {
+    "jquery": "^3.4.1"
   }
 }
