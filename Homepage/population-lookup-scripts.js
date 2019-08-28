@@ -161,3 +161,28 @@ function endsWithNumbers(string) {
   var regex = /([a-zA-Z]*[0-9])$/;
   return string.match(regex);
 }
+
+async function getPopulationRate(country) {
+  let rate = await calculatePopulationIncreaseRate(country);
+
+  alert(rate);
+}
+
+async function calculatePopulationIncreaseRate(country) {
+  //build url
+  let url = `http://54.72.28.201/1.0/population/${country}/today-and-tomorrow`;
+
+  //Call API to get population
+  let response = await fetch(url);
+  if (!response.ok) {
+    throw new Error();
+  }
+  let json = await response.json();
+
+  let todaysPopulation = json.total_population[0].population;
+  let tomorrowsPopulation = json.total_population[1].population;
+
+  let updateRate = (tomorrowsPopulation - todaysPopulation) / 86400;
+
+  return updateRate;
+}
