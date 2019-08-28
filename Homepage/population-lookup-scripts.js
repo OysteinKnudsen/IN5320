@@ -1,4 +1,5 @@
 window.onload = populateCountryList;
+window.onload = setInterval(updatePopulationCount, 1000);
 
 /**
  * Appends a country to the list of countries
@@ -162,12 +163,6 @@ function endsWithNumbers(string) {
   return string.match(regex);
 }
 
-async function getPopulationRate(country) {
-  let rate = await calculatePopulationIncreaseRate(country);
-
-  alert(rate);
-}
-
 async function calculatePopulationIncreaseRate(country) {
   //build url
   let url = `http://54.72.28.201/1.0/population/${country}/today-and-tomorrow`;
@@ -185,4 +180,25 @@ async function calculatePopulationIncreaseRate(country) {
   let updateRate = (tomorrowsPopulation - todaysPopulation) / 86400;
 
   return updateRate;
+}
+
+async function updatePopulationCount() {
+  let countryList = document.getElementById("countryList");
+  let countryListItems = countryList.getElementsByTagName("li");
+
+  for (let i = 0; i < countryListItems.length; i++) {
+    let text = countryListItems[i].innerText;
+    let number = extractNumber(text);
+    let country = text.slice(0, text.indexOf("-") - 1);
+
+    let populationRate = await calculatePopulationIncreaseRate(country);
+
+    let newText = Number(number) + Number(populationRate);
+
+    countryListItems[i].innerText = country + " - " + newText;
+  }
+}
+
+function extractNumber(str) {
+  return Number(str.replace(/[^0-9\.]+/g, ""));
 }
