@@ -7,9 +7,15 @@ window.onload = populateCountryList;
  */
 async function appendToCountryList(country, store) {
   var countryEntry = country;
+  var countryPopulation;
 
   if (!endsWithNumbers(country)) {
-    let countryPopulation = await getPopulation(country);
+    try {
+      countryPopulation = await getPopulation(country);
+    } catch (e) {
+      alert("Cannot find country");
+      return;
+    }
     countryEntry = `${country} - ${countryPopulation}`;
   }
 
@@ -18,7 +24,6 @@ async function appendToCountryList(country, store) {
   let newListItem = document.createElement("li");
 
   // Add the country name and delete button
-
   newListItem.appendChild(document.createTextNode(countryEntry));
 
   //Create deletebutton with onlick function
@@ -144,6 +149,9 @@ async function getPopulation(country) {
 
   //Call API to get population
   let response = await fetch(url);
+  if (!response.ok) {
+    throw new Error();
+  }
   let json = await response.json();
 
   return json.total_population.population;
