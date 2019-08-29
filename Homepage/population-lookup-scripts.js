@@ -61,19 +61,12 @@ function loadFromLocalStorage() {
  */
 function deleteCountryFromList(element) {
   // Get the name of the country which is to be deleted
-  let countryEntry = element.parentElement.firstChild.nodeValue;
+  let countryName = element.parentElement.firstChild.innerHTML.trim();
 
+  countries = countries.filter(ele => ele.name != countryName);
+
+  saveDataToLocalStorage();
   element.parentElement.remove();
-
-  //Delete the country from the local storage
-  let allCountries = JSON.parse(localStorage.getItem("countries"));
-
-  // Delete the country from the array of countries
-  countries = countries.filter(function(value, index, arr) {});
-
-  let countriesAfterDelete = allCountries.filter(ele => ele != countryEntry);
-
-  localStorage.setItem("countries", JSON.stringify(countriesAfterDelete));
 }
 
 function startsWith(element, searchWord) {
@@ -81,23 +74,23 @@ function startsWith(element, searchWord) {
 }
 
 function searchBarFunction() {
-  let allCountries = JSON.parse(localStorage.getItem("countries"));
-  let searchWord = document.getElementById("searchBar").value;
-
+  let allCountries = countries;
+  let searchBar = document.getElementById("searchBar");
+  let searchWord = searchBar.value;
   let resultList = search(allCountries, searchWord);
-
+  clearCountryList();
   createList(resultList);
 }
 
 function search(list, searchWord) {
   let resultList = [];
 
-  list.forEach(element => {
+  list.forEach(country => {
     if (
-      startsWith(element.toLowerCase(), searchWord.toLowerCase()) &&
-      searchWord.length <= element.length
+      startsWith(country.name.toLowerCase(), searchWord.toLowerCase()) &&
+      searchWord.length <= country.name.length
     ) {
-      resultList.push(element);
+      resultList.push(country);
     }
   });
 
@@ -109,9 +102,9 @@ function clearCountryList() {
   countryList.innerHTML = "";
 }
 
-function createList() {
-  for (let i = 0; i < countries.length; i++) {
-    appendToCountryList(countries[i]);
+function createList(list) {
+  for (let i = 0; i < list.length; i++) {
+    appendToCountryList(list[i]);
   }
 }
 
@@ -173,19 +166,22 @@ async function addCountry(nameOfCountry) {
     return;
   }
 
-  let pop = await getPopulation(nameOfCountry);
-  let popGrowthRate = await calculatePopulationIncreaseRate(nameOfCountry);
+  try {
+    let pop = await getPopulation(nameOfCountry);
+    let popGrowthRate = await calculatePopulationIncreaseRate(nameOfCountry);
+    let country = {
+      name: nameOfCountry,
+      population: pop,
+      populationGrowthRate: popGrowthRate
+    };
 
-  let country = {
-    name: nameOfCountry,
-    population: pop,
-    populationGrowthRate: popGrowthRate
-  };
-
-  countries.push(country);
-  appendToCountryList(country);
-  appendToLocalStorage(country);
-  document.getElementById("countryInputField").focus();
+    countries.push(country);
+    appendToCountryList(country);
+    appendToLocalStorage(country);
+    document.getElementById("countryInputField").focus();
+  } catch (e) {
+    alert("Invalid country name");
+  }
 }
 
 function init() {
@@ -202,9 +198,18 @@ function initList() {
 }
 
 function populationGrowthIntervalFunction() {
+  if (document.activeElement === document.getElementById("searchBar")) {
+    updatePopCount();
+    return;
+  }
+
   updatePopCount();
   clearCountryList();
-  createList();
+  createList(countries);
+  countries.sort(function(a, b) {
+    if (a.name > b.name) return 1;
+    if (a.name < b.name) return -1;
+  });
 }
 
 function saveDataToLocalStorage() {
