@@ -1,35 +1,25 @@
-window.onload = initWindow;
-
+window.onload = init;
 var countries = [];
 
 /**
  * Appends a country to the list of countries
  * @param {*} country Country to be added.
- * @param {*} store Optional boolean to decide if the country should be stored in local memory
  */
 
-async function appendToCountryList(country, store) {
-  var countryEntry = country;
-  var countryPopulation;
-
-  addCountry(country);
-
-  if (!endsWithNumbers(country)) {
-    try {
-      countryPopulation = await getPopulation(country);
-    } catch (e) {
-      alert("Cannot find country");
-      return;
-    }
-    countryEntry = `${country} - ${countryPopulation}`;
-  }
+async function appendToCountryList(country) {
+  let countryName = country.name;
+  let countryPopulation = country.population;
 
   // Create the list item
   let list = document.getElementById("countryList");
   let newListItem = document.createElement("li");
+  let nameSpan = document.createElement("span");
+  let populationSpan = document.createElement("span");
+  nameSpan.innerHTML = countryName + " ";
+  populationSpan.innerHTML = countryPopulation;
 
-  // Add the country name and delete button
-  newListItem.appendChild(document.createTextNode(countryEntry));
+  newListItem.appendChild(nameSpan);
+  newListItem.appendChild(populationSpan);
 
   //Create deletebutton with onlick function
   let delBtn = document.createElement("button");
@@ -38,15 +28,6 @@ async function appendToCountryList(country, store) {
 
   newListItem.appendChild(delBtn);
   list.appendChild(newListItem);
-
-  if (store) {
-    appendToLocalStorage(countryEntry);
-  }
-
-  //Clear the input field and give focus
-  let countryInputField = document.getElementById("countryInputField");
-  countryInputField.value = "";
-  countryInputField.focus();
 }
 
 /**
@@ -65,20 +46,14 @@ function appendToLocalStorage(newCountry) {
   localStorage.setItem("countries", JSON.stringify(existingCountries));
 }
 
-/**
- * Populates the list of countries with values from the local storage.
- */
-function populateCountryList() {
+function loadFromLocalStorage() {
   let existingCountries = localStorage.getItem("countries");
 
   if (!existingCountries) existingCountries = [];
 
   existingCountries = JSON.parse(existingCountries);
 
-  for (let i = 0; i < existingCountries.length; i++) {
-    let country = existingCountries[i];
-    appendToCountryList(country, false);
-  }
+  countries = existingCountries;
 }
 
 /**
@@ -92,6 +67,9 @@ function deleteCountryFromList(element) {
 
   //Delete the country from the local storage
   let allCountries = JSON.parse(localStorage.getItem("countries"));
+
+  // Delete the country from the array of countries
+  countries = countries.filter(function(value, index, arr) {});
 
   let countriesAfterDelete = allCountries.filter(ele => ele != countryEntry);
 
@@ -131,13 +109,10 @@ function clearCountryList() {
   countryList.innerHTML = "";
 }
 
-function createList(countries) {
-  clearCountryList();
-  countries.forEach(element => {
-    appendToCountryList(element, false);
-  });
-
-  document.getElementById("searchBar").focus();
+function createList() {
+  for (let i = 0; i < countries.length; i++) {
+    appendToCountryList(countries[i]);
+  }
 }
 
 /**
@@ -162,11 +137,6 @@ async function getPopulation(country) {
   return json.total_population.population;
 }
 
-function endsWithNumbers(string) {
-  var regex = /([a-zA-Z]*[0-9])$/;
-  return string.match(regex);
-}
-
 async function calculatePopulationIncreaseRate(country) {
   //build url
   let url = `http://54.72.28.201/1.0/population/${country}/today-and-tomorrow`;
@@ -186,30 +156,15 @@ async function calculatePopulationIncreaseRate(country) {
   return updateRate;
 }
 
-async function updatePopulationCount() {
-  let countryList = document.getElementById("countryList");
-  let countryListItems = countryList.getElementsByTagName("li");
-
-  for (let i = 0; i < countryListItems.length; i++) {
-    let text = countryListItems[i].innerText;
-    let number = extractNumber(text);
-    let country = text.slice(0, text.indexOf("-") - 1);
-
-    let populationRate = await calculatePopulationIncreaseRate(country);
-
-    let newText = Number(number) + Number(populationRate);
-
-    countryListItems[i].innerText = country + " - " + newText;
+function updatePopCount() {
+  for (let i = 0; i < countries.length; i++) {
+    countries[i].population += countries[i].populationGrowthRate;
   }
 }
 
-function extractNumber(str) {
-  return Number(str.replace(/[^0-9\.]+/g, ""));
-}
-
-function initWindow() {
-  populateCountryList();
-  setInterval(updatePopulationCount, 1000);
+function refreshCountryList() {
+  clearCountryList();
+  initList();
 }
 
 async function addCountry(nameOfCountry) {
@@ -223,4 +178,25 @@ async function addCountry(nameOfCountry) {
   };
 
   countries.push(country);
+  appendToCountryList(country);
+  appendToLocalStorage(country);
+  document.getElementById("countryInputField").focus();
+}
+
+function init() {
+  loadFromLocalStorage();
+  initList();
+  setInterval(intervalFunction, 1000);
+}
+
+function initList() {
+  for (let i = 0; i < countries.length; i++) {
+    appendToCountryList(countries[i]);
+  }
+}
+
+function intervalFunction() {
+  updatePopCount();
+  clearCountryList();
+  createList();
 }
