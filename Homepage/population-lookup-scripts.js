@@ -16,7 +16,7 @@ async function appendToCountryList(country) {
   let nameSpan = document.createElement("span");
   let populationSpan = document.createElement("span");
   nameSpan.innerHTML = countryName + " ";
-  populationSpan.innerHTML = countryPopulation;
+  populationSpan.innerHTML = Math.trunc(countryPopulation);
 
   newListItem.appendChild(nameSpan);
   newListItem.appendChild(populationSpan);
@@ -168,6 +168,11 @@ function refreshCountryList() {
 }
 
 async function addCountry(nameOfCountry) {
+  if (alreadyAdded(nameOfCountry)) {
+    alert("Already exists");
+    return;
+  }
+
   let pop = await getPopulation(nameOfCountry);
   let popGrowthRate = await calculatePopulationIncreaseRate(nameOfCountry);
 
@@ -186,7 +191,8 @@ async function addCountry(nameOfCountry) {
 function init() {
   loadFromLocalStorage();
   initList();
-  setInterval(intervalFunction, 1000);
+  setInterval(populationGrowthIntervalFunction, 1000);
+  setInterval(saveDataToLocalStorage, 5000);
 }
 
 function initList() {
@@ -195,8 +201,25 @@ function initList() {
   }
 }
 
-function intervalFunction() {
+function populationGrowthIntervalFunction() {
   updatePopCount();
   clearCountryList();
   createList();
+}
+
+function saveDataToLocalStorage() {
+  localStorage.setItem("countries", JSON.stringify(countries));
+}
+
+function alreadyAdded(countryName) {
+  let exists = false;
+
+  for (let i = 0; i < countries.length; i++) {
+    if (countries[i].name == countryName) {
+      exists = true;
+      break;
+    }
+  }
+
+  return exists;
 }
