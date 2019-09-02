@@ -6,6 +6,18 @@ var countries = [];
  * @param {*} country Country to be added.
  */
 
+async function getCode(country) {
+  let url = "https://restcountries.eu/rest/v2/name/" + country;
+
+  let response = await fetch(url);
+  if (!response.ok) {
+    throw new Error();
+  }
+  let json = await response.json();
+
+  return json[0].alpha2Code;
+}
+
 async function appendToCountryList(country) {
   let countryName = country.name;
   let countryPopulation = country.population;
@@ -13,10 +25,30 @@ async function appendToCountryList(country) {
   // Create the list item
   let list = document.getElementById("countryList");
   let newListItem = document.createElement("li");
+
+  //Create spans to be placed inside the list item with country information
+  let countryFlagSpan = document.createElement("span");
+  countryFlagSpan.setAttribute(
+    "style",
+    "padding-right:3px; padding-top: 3px; display:inline-block;"
+  );
+
+  let countryFlagImage = document.createElement("img");
+
+  let imageUrl = `https://www.countryflags.io/${country.countryCode}/flat/16.png`;
+  countryFlagImage.setAttribute("src", imageUrl);
+
+  let countryCodeSpan = document.createElement("span");
   let nameSpan = document.createElement("span");
+  nameSpan.setAttribute("id", "countryName");
   let populationSpan = document.createElement("span");
-  nameSpan.innerHTML = countryName + " ";
+
+  nameSpan.innerHTML = " - " + countryName + " - ";
   populationSpan.innerHTML = Math.trunc(countryPopulation);
+  countryCodeSpan.innerHTML = "[" + country.countryCode + "] - ";
+  countryCodeSpan.appendChild(countryFlagImage);
+  //Add the spans to the list item
+  newListItem.appendChild(countryCodeSpan);
 
   newListItem.appendChild(nameSpan);
   newListItem.appendChild(populationSpan);
@@ -61,11 +93,17 @@ function loadFromLocalStorage() {
  */
 function deleteCountryFromList(element) {
   // Get the name of the country which is to be deleted
-  let countryName = element.parentElement.firstChild.innerHTML.trim();
+  let countryName = element.parentElement.childNodes[1].innerHTML
+    .replace(/-/g, "")
+    .trim();
 
+  // Delete the country from the array of countries
   countries = countries.filter(ele => ele.name != countryName);
 
+  //Save data to local storage to reflect changes.
   saveDataToLocalStorage();
+
+  // Delete the parent element (list item)
   element.parentElement.remove();
 }
 
@@ -169,15 +207,19 @@ async function addCountry(nameOfCountry) {
   try {
     let pop = await getPopulation(nameOfCountry);
     let popGrowthRate = await calculatePopulationIncreaseRate(nameOfCountry);
+    let alpha2Code = await getCode(nameOfCountry);
+
     let country = {
       name: nameOfCountry,
       population: pop,
-      populationGrowthRate: popGrowthRate
+      populationGrowthRate: popGrowthRate,
+      countryCode: alpha2Code
     };
 
     countries.push(country);
     appendToCountryList(country);
     appendToLocalStorage(country);
+    document.getElementById("countryInputField").value = "";
     document.getElementById("countryInputField").focus();
   } catch (e) {
     alert("Invalid country name");
@@ -227,4 +269,10 @@ function alreadyAdded(countryName) {
   }
 
   return exists;
+}
+
+function clearData() {
+  countries = [];
+  localStorage.setItem("countries", "");
+  clearCountryList();
 }

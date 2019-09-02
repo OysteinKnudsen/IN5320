@@ -6,32 +6,54 @@
     <!-- Needed to provide responsive design, scale content to match the device -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Population lookup</title>
-    <link rel="population-lookup-style.css" type="text/css" href="style.css" />
     <script type="text/javascript" src="population-lookup-scripts.js"></script>
+
+
+<!--Css section-->
+    <style>
+      #mainContainer{
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+        text-align: center;
+        background-color: aqua;
+        border: 2px solid black;
+        padding: 2%;
+      }
+
+      #countryList{
+        list-style: none;
+      }
+      
+      
+    </style>
   </head>
 
-  <body>
-    <h1> Live population counter</h1>
-    <div>
-      <input
-        type="text"
-        name="Country"
-        value="Country"
-        id="countryInputField"
-      />
-
-      <button
-        onclick="addCountry(document.getElementById('countryInputField').value)"
-      >
-        Add country
-      </button>
-
+  <body >
+    
+    <div id="mainContainer">
+        <h1> Live population counter</h1>
+        <div id="inputSection">
+            <input
+            type="text"
+            name="Country"
+            value="Country"
+            id="countryInputField"
+          />
+    
+          <button
+            onclick="addCountry(document.getElementById('countryInputField').value)">Add country</button>
+           
+          <br></br>
+          <input type="search"  value="Search" id="searchBar" oninput="searchBarFunction()"/>
+        </div>
       
-<br></br>
-      <input type="search"  value="Search" id="searchBar" oninput="searchBarFunction()"/>
-      <br></br>
-      </button>
       <ul id="countryList"></ul>
+      <button onclick="clearData()">Clear list</button>
     </div>
   </body>
+
+  
 </html>
+
+
