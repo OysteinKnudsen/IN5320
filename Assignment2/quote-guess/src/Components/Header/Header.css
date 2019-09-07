@@ -1,0 +1,10 @@
+.header {
+  padding: 40px;
+  background-color: deepskyblue;
+  margin-bottom: 15px;
+}
+
+#header-text {
+  font-family: monospace;
+  font-size: 36;
+}

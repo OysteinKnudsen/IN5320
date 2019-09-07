@@ -1,0 +1,14 @@
+.guess-button {
+  background-color: cadetblue;
+  padding: 8px;
+  margin: 8px;
+  color: white;
+  min-width: 32px;
+  border: unset;
+  outline: unset;
+  border-radius: 10px;
+}
+
+.guess-button:hover {
+  background-color: cornflowerblue;
+}
