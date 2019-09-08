@@ -7,17 +7,24 @@ export const QuoteBox = ({ quoteSourceNumber }) => {
   );
 
   useEffect(() => {
-    const getQuoteText = async quoteSourceNumber => {
+    const getQuoteText = async () => {
+      console.log("getQuoteText called");
       let quoteText = "";
 
-      quoteSourceNumber = getRandomInt(1, 2);
-
+      console.log(quoteSourceNumber);
       if (quoteSourceNumber === 1) {
+        console.log("Trump quote");
         quoteText = await getTrumpQuote();
       }
 
       if (quoteSourceNumber === 2) {
+        console.log("Kanye quote");
         quoteText = await getKanyeQuote();
+      }
+
+      if (quoteSourceNumber === 3) {
+        console.log("Ron swanson quote");
+        quoteText = await getRonSwansonQuote();
       }
 
       setQuoteText(quoteText);
@@ -50,6 +57,14 @@ const getKanyeQuote = async () => {
   const response = await fetch(kanyeApiUrl);
   const json = await response.json();
   return json.quote;
+};
+
+const getRonSwansonQuote = async () => {
+  const ronSwansonApiUrl = "https://ron-swanson-quotes.herokuapp.com/v2/quotes";
+  const response = await fetch(ronSwansonApiUrl);
+  const json = await response.json();
+  console.log(json);
+  return json[0];
 };
 
 function getRandomInt(min, max) {

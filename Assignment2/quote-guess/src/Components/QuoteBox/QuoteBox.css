@@ -2,7 +2,8 @@
   background-color: #336b87;
   padding: 16px 32px;
   color: white;
-  font-family: sans-sans-serif;
+  font-family: monospace;
   max-width: 70%;
   margin: 0 auto;
+  border: 1px solid black;
 }

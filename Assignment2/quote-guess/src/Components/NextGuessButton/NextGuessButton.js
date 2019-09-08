@@ -1,9 +1,12 @@
 import React from "react";
 import "./NextGuessButton.css";
 
-export const NextGuessButton = ({ setSource }) => {
+export const NextGuessButton = ({ setSource, setGuess, setResult }) => {
   const onClick = () => {
-    setSource(getRandomInt(1, 2));
+    const number = getRandomInt(1, 3);
+    setResult(null);
+    setSource(number);
+    console.log("OnClick");
   };
 
   return (

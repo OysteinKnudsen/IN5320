@@ -7,14 +7,47 @@ import { GuessButton } from "../GuessButton/GuessButton";
 
 function App() {
   const [quoteSourceNumber, setSource] = React.useState(null);
+  const [guessedSourceNumber, setGuess] = React.useState(null);
+  const [result, setResult] = React.useState("");
 
+  useEffect(() => {
+    if (guessedSourceNumber !== quoteSourceNumber) {
+      setResult("You suck!");
+    } else {
+      setResult("Good guessing!");
+    }
+  }, [guessedSourceNumber]);
+  document.title = "Quote guessing game!";
   return (
     <div id="app-container">
       <Header />
       <QuoteBox quoteSourceNumber={quoteSourceNumber} />
-      <GuessButton text="This must be trump!" />
-      <GuessButton text="This must be Kanye!" />
-      <NextGuessButton setSource={setSource}> </NextGuessButton>
+      <div id="button-container">
+        <GuessButton
+          text="This must be Trump!"
+          guessValue={1}
+          setGuess={setGuess}
+        />
+        <GuessButton
+          text="This must be Kanye!"
+          guessValue={2}
+          setGuess={setGuess}
+        />
+        <GuessButton
+          text="This must be Ron Swanson!"
+          guessValue={3}
+          setGuess={setGuess}
+        />
+        <NextGuessButton
+          setSource={setSource}
+          setGuess={setGuess}
+          setResult={setResult}
+        >
+          {" "}
+        </NextGuessButton>
+
+        <h3>{result}</h3>
+      </div>
     </div>
   );
 }
